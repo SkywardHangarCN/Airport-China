@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>机场信息查询系统</title>
+    <title id="pageTitle">机场信息查询系统</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -64,6 +64,26 @@
     <!-- 头部 -->
     <header class="commercial-gradient text-white py-12 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+        
+        <!-- 语言选择器 -->
+        <div class="absolute top-4 right-4 z-30">
+            <div class="relative inline-block text-left">
+                <select id="langSelector" class="bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold py-2 px-4 rounded-xl cursor-pointer hover:bg-white/20 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none pr-8">
+                    <option value="zh-Hans" class="bg-slate-900">中文简体</option>
+                    <option value="zh-Hant" class="bg-slate-900">中文繁体</option>
+                    <option value="en" class="bg-slate-900">English</option>
+                    <option value="ja" class="bg-slate-900">日本語</option>
+                    <option value="ko" class="bg-slate-900">한국어</option>
+                    <option value="lzh" class="bg-slate-900">文言文（华夏）</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                    <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
         <div class="container mx-auto px-4 relative z-10">
             <div class="flex flex-col items-center">
                 <div class="mb-4 bg-blue-500/20 p-3 rounded-2xl backdrop-blur-md border border-white/10">
@@ -71,8 +91,8 @@
                         <path d="M21 16.5c0 .38-.21.71-.53.88l-7.97 4.25c-.16.09-.33.12-.5.12s-.34-.03-.5-.12l-7.97-4.25c-.32-.17-.53-.5-.53-.88V7.5c0-.38.21-.71.53-.88l7.97-4.25c.16-.09.33-.12.5-.12s.34.03.5.12l7.97 4.25c.32.17.53.5.53.88v9z"/>
                     </svg>
                 </div>
-                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-center mb-3 bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-400">
-                    中國机场信息查询系统
+                <h1 id="headerTitle" class="text-4xl md:text-5xl font-extrabold tracking-tight text-center mb-3 bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-400">
+                    中国机场信息查询系统
                 </h1>
                 <div class="h-1 w-24 bg-blue-500 rounded-full mb-4"></div>
                 <p class="text-center text-slate-400 font-medium tracking-widest uppercase text-sm">
@@ -91,16 +111,13 @@
                     <input 
                         type="text" 
                         id="searchInput" 
-                        placeholder="搜尋機場名稱、代碼、城市或國家..." 
+                        placeholder="搜索机场名称、代码、城市或国家..." 
                         class="w-full px-7 py-5 pl-14 rounded-2xl border-0 focus:ring-2 focus:ring-blue-500 bg-white text-slate-800 shadow-2xl text-lg placeholder-slate-400"
                     >
                     <div class="absolute left-5 text-slate-400 group-focus-within:text-blue-500 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                    </div>
-                    <div class="absolute right-4 flex gap-2">
-                        <span class="px-3 py-1 bg-slate-100 rounded-lg text-xs font-bold text-slate-400 border border-slate-200">⌘ K</span>
                     </div>
                 </div>
             </div>
@@ -111,8 +128,8 @@
     <div class="container mx-auto px-4 py-12 max-w-6xl">
         <div class="flex justify-between items-end mb-6 px-2">
             <div>
-                <h2 class="text-2xl font-bold text-slate-800">航站數據庫</h2>
-                <p class="text-slate-500 text-sm mt-1">實時更新的全球民航與軍事設施資訊</p>
+                <h2 id="dbTitle" class="text-2xl font-bold text-slate-800">机场数据库</h2>
+                <p id="dbSubtitle" class="text-slate-500 text-sm mt-1">实时更新的全球民航与军事设施资讯</p>
             </div>
             <p id="resultCount" class="text-sm font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-lg border border-blue-100"></p>
         </div>
@@ -122,11 +139,11 @@
                 <table class="w-full table-fixed border-collapse">
                     <thead>
                         <tr class="bg-slate-50/80 backdrop-blur-sm border-b border-slate-200">
-                            <th class="w-1/4 px-8 py-5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">中文名稱</th>
-                            <th class="w-1/4 px-8 py-5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">英文名稱</th>
-                            <th class="w-1/6 px-8 py-5 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">ICAO</th>
-                            <th class="w-1/6 px-8 py-5 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">IATA</th>
-                            <th class="w-1/6 px-8 py-5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">城市</th>
+                            <th id="thNameZh" class="w-1/4 px-8 py-5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">中文名称</th>
+                            <th id="thNameEn" class="w-1/4 px-8 py-5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">英文名称</th>
+                            <th id="thIcao" class="w-1/6 px-8 py-5 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">ICAO</th>
+                            <th id="thIata" class="w-1/6 px-8 py-5 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">IATA</th>
+                            <th id="thCity" class="w-1/6 px-8 py-5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">城市</th>
                         </tr>
                     </thead>
                     <tbody id="airportTable" class="divide-y divide-slate-100">
@@ -148,25 +165,25 @@
                                 <path d="M21 16.5c0 .38-.21.71-.53.88l-7.97 4.25c-.16.09-.33.12-.5.12s-.34-.03-.5-.12l-7.97-4.25c-.32-.17-.53-.5-.53-.88V7.5c0-.38.21-.71.53-.88l7.97-4.25c.16-.09.33-.12.5-.12s.34.03.5.12l7.97 4.25c.32.17.53.5.53.88v9z"/>
                             </svg>
                         </div>
-                        <span class="text-xl font-bold text-white tracking-tight">云端机库CN</span>
+                        <span id="footerBrand" class="text-xl font-bold text-white tracking-tight">云端机库CN</span>
                     </div>
-                    <p class="text-xs leading-relaxed opacity-60 font-medium">
+                    <p id="footerDesc" class="text-xs leading-relaxed opacity-60 font-medium">
                         本頁面數據僅供模擬飛行、航空愛好者使用，非官方資料。嚴禁用於任何違法違規及危害國家安全的行為。數據內容不具備導航效力。
                     </p>
                 </div>
                 
                 <div class="flex flex-col items-center md:items-end gap-4">
                     <div class="flex gap-6 text-sm font-bold uppercase tracking-widest">
-                        <a href="#" class="hover:text-blue-500 transition-colors">Database</a>
-                        <a href="#" class="hover:text-blue-500 transition-colors">API</a>
-                        <a href="#" class="hover:text-blue-500 transition-colors">Support</a>
+                        <a href="#" id="footerLinkDb" class="hover:text-blue-500 transition-colors">數據庫</a>
+                        <a href="#" id="footerLinkApi" class="hover:text-blue-500 transition-colors">接口</a>
+                        <a href="#" id="footerLinkSupport" class="hover:text-blue-500 transition-colors">支持</a>
                     </div>
                     <div class="pt-4 text-center md:text-right">
-                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">
-                            Copyright © 2026 云端机库CN. All Rights Reserved.
+                        <p id="footerCopyright" class="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">
+                            Copyright © 2026 雲端機庫CN. 保留所有權利。
                         </p>
-                        <p class="text-[10px] text-slate-600 mt-1">
-                            版權所有© 2026 云端机库CN.
+                        <p id="footerAllRights" class="text-[10px] text-slate-600 mt-1">
+                            版權所有© 2026 雲端機庫CN.
                         </p>
                     </div>
                 </div>
@@ -185,10 +202,244 @@
 
     <script src="airports-data.js"></script>
     <script>
+        const translations = {
+            'zh-Hans': {
+                pageTitle: "机场信息查询系统",
+                headerTitle: "中国机场信息查询系统",
+                searchInput: "搜索机场名称、代码、城市或国家...",
+                dbTitle: "机场数据库",
+                dbSubtitle: "实时更新的全球民航与军事设施资讯",
+                thNameZh: "中文名称",
+                thNameEn: "英文名称",
+                thIcao: "ICAO",
+                thIata: "IATA",
+                thCity: "城市",
+                modalDetails: "机场详情",
+                modalIcao: "ICAO 代码",
+                modalIata: "IATA 代码",
+                modalGeo: "地理位置",
+                modalCity: "城市",
+                modalCountry: "国家",
+                modalSpecs: "设施规格",
+                modalTerminals: "航站楼",
+                modalRunways: "跑道数量",
+                modalContact: "联系信息",
+                modalWebsite: "官方网站",
+                modalHubs: "基地航空公司",
+                modalOverview: "机场概况",
+                footerDesc: "本页面数据仅供模拟飞行、航空爱好者使用，非官方资料。严禁用于任何违法违规及危害国家安全的行为。数据内容不具备导航效力。",
+                footerLinkDb: "数据库",
+                footerLinkApi: "接口",
+                footerLinkSupport: "支持",
+                footerCopyright: "Copyright © 2026 云端机库CN. 保留所有权利。",
+                footerAllRights: "版权所有© 2026 云端机库CN.",
+                noResults: "未找到匹配的机场",
+                resultCount: "共 {count} 个机场"
+            },
+            'zh-Hant': {
+                pageTitle: "機場信息查詢系統",
+                headerTitle: "中國機場信息查詢系統",
+                searchInput: "搜尋機場名稱、代碼、城市或國家...",
+                dbTitle: "機場數據庫",
+                dbSubtitle: "實時更新的全球民航與軍事設施資訊",
+                thNameZh: "中文名稱",
+                thNameEn: "英文名稱",
+                thIcao: "ICAO",
+                thIata: "IATA",
+                thCity: "城市",
+                modalDetails: "機場詳情",
+                modalIcao: "ICAO 代碼",
+                modalIata: "IATA 代碼",
+                modalGeo: "地理位置",
+                modalCity: "城市",
+                modalCountry: "國家",
+                modalSpecs: "設施規格",
+                modalTerminals: "航站樓",
+                modalRunways: "跑道數量",
+                modalContact: "聯繫信息",
+                modalWebsite: "官方網站",
+                modalHubs: "基地航空公司",
+                modalOverview: "機場概況",
+                footerDesc: "本頁面數據僅供模擬飛行、航空愛好者使用，非官方資料。嚴禁用於任何違法違規及危害國家安全的行為。數據內容不具備導航效力。",
+                footerLinkDb: "數據庫",
+                footerLinkApi: "接口",
+                footerLinkSupport: "支持",
+                footerCopyright: "Copyright © 2026 雲端機庫CN. 保留所有權利。",
+                footerAllRights: "版權所有© 2026 雲端機庫CN.",
+                noResults: "未找到匹配的機場",
+                resultCount: "共 {count} 個機場"
+            },
+            'en': {
+                pageTitle: "Airport Info System",
+                headerTitle: "China Airport Information System",
+                searchInput: "Search by airport name, code, city or country...",
+                dbTitle: "Airport Database",
+                dbSubtitle: "Real-time global aviation & military facility info",
+                thNameZh: "Chinese Name",
+                thNameEn: "English Name",
+                thIcao: "ICAO",
+                thIata: "IATA",
+                thCity: "City",
+                modalDetails: "Airport Details",
+                modalIcao: "ICAO Code",
+                modalIata: "IATA Code",
+                modalGeo: "Geographic Location",
+                modalCity: "City",
+                modalCountry: "Country",
+                modalSpecs: "Facility Specs",
+                modalTerminals: "Terminals",
+                modalRunways: "Runways",
+                modalContact: "Contact Info",
+                modalWebsite: "Official Website",
+                modalHubs: "Hub Carriers",
+                modalOverview: "Overview",
+                footerDesc: "This data is for flight simulation and aviation enthusiasts only. Not for official navigation. Misuse for illegal activities is strictly prohibited.",
+                footerLinkDb: "Database",
+                footerLinkApi: "API",
+                footerLinkSupport: "Support",
+                footerCopyright: "Copyright © 2026 CloudHangarCN. All rights reserved.",
+                footerAllRights: "Copyright© 2026 CloudHangarCN.",
+                noResults: "No matching airports found",
+                resultCount: "{count} airports found"
+            },
+            'ja': {
+                pageTitle: "空港情報システム",
+                headerTitle: "中国空港情報検索システム",
+                searchInput: "空港名、コード、都市、国で検索...",
+                dbTitle: "空港データベース",
+                dbSubtitle: "世界の民間航空・軍事施設のリアルタイム情報",
+                thNameZh: "中国語名",
+                thNameEn: "英語名",
+                thIcao: "ICAO",
+                thIata: "IATA",
+                thCity: "都市",
+                modalDetails: "空港の詳細",
+                modalIcao: "ICAOコード",
+                modalIata: "IATAコード",
+                modalGeo: "地理的位置",
+                modalCity: "都市",
+                modalCountry: "国",
+                modalSpecs: "施設仕様",
+                modalTerminals: "ターミナル",
+                modalRunways: "滑走路数",
+                modalContact: "連絡先情報",
+                modalWebsite: "公式サイト",
+                modalHubs: "ハブ航空会社",
+                modalOverview: "概要",
+                footerDesc: "このデータはフライトシミュレーションおよび航空愛好家専用です。公式な航法用ではありません。違法行為への使用は固く禁じられています。",
+                footerLinkDb: "データベース",
+                footerLinkApi: "API",
+                footerLinkSupport: "サポート",
+                footerCopyright: "Copyright © 2026 クラウドハンガーCN. All rights reserved.",
+                footerAllRights: "著作権© 2026 クラウドハンガーCN.",
+                noResults: "該当する空港が見つかりません",
+                resultCount: "合計 {count} 空港"
+            },
+            'ko': {
+                pageTitle: "공항 정보 시스템",
+                headerTitle: "중국 공항 정보 조회 시스템",
+                searchInput: "공항 이름, 코드, 도시 또는 국가로 검색...",
+                dbTitle: "공항 데이터베이스",
+                dbSubtitle: "전 세계 민간 및 군사 시설 실시간 정보",
+                thNameZh: "중국어 이름",
+                thNameEn: "영어 이름",
+                thIcao: "ICAO",
+                thIata: "IATA",
+                thCity: "도시",
+                modalDetails: "공항 상세 정보",
+                modalIcao: "ICAO 코드",
+                modalIata: "IATA 코드",
+                modalGeo: "지리적 위치",
+                modalCity: "도시",
+                modalCountry: "국가",
+                modalSpecs: "시설 사양",
+                modalTerminals: "터미널",
+                modalRunways: "활주로 수",
+                modalContact: "연락처 정보",
+                modalWebsite: "공식 웹사이트",
+                modalHubs: "허브 항공사",
+                modalOverview: "개요",
+                footerDesc: "이 데이터는 비행 시뮬레이션 및 항공 애호가용입니다. 공식 항행용이 아닙니다. 불법 행위 사용을 엄격히 금지합니다.",
+                footerLinkDb: "데이터베이스",
+                footerLinkApi: "API",
+                footerLinkSupport: "지원",
+                footerCopyright: "Copyright © 2026 클라우드행어CN. All rights reserved.",
+                footerAllRights: "저작권© 2026 클라우드행어CN.",
+                noResults: "검색 결과가 없습니다",
+                resultCount: "총 {count}개 공항"
+            },
+            'lzh': {
+                pageTitle: "空港志",
+                headerTitle: "中土空港志略",
+                searchInput: "搜名、號、邑、邦...",
+                dbTitle: "空港庫",
+                dbSubtitle: "天下民航、軍事設施，隨時更始",
+                thNameZh: "華夏名",
+                thNameEn: "泰西名",
+                thIcao: "ICAO",
+                thIata: "IATA",
+                thCity: "邑",
+                modalDetails: "空港詳解",
+                modalIcao: "ICAO 號",
+                modalIata: "IATA 號",
+                modalGeo: "方輿",
+                modalCity: "邑",
+                modalCountry: "邦",
+                modalSpecs: "規模",
+                modalTerminals: "航站",
+                modalRunways: "馳道",
+                modalContact: "通訊",
+                modalWebsite: "官網",
+                modalHubs: "駐劄航司",
+                modalOverview: "概況",
+                footerDesc: "此志僅供模擬飛行、航空雅好者之用，非官家正典。嚴禁逆法亂綱、危害社稷之舉。此中文字，不足為導航之憑。",
+                footerLinkDb: "庫",
+                footerLinkApi: "口",
+                footerLinkSupport: "佐",
+                footerCopyright: "Copyright © 2026 雲端機庫CN. 權利悉備。",
+                footerAllRights: "版權所有© 2026 雲端機庫CN.",
+                noResults: "未見合規者",
+                resultCount: "凡 {count} 處"
+            }
+        };
+
+        let currentLang = 'zh-Hans';
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            
+            // 更新 html lang 属性
+            document.documentElement.lang = lang;
+
+            // 更新静态文本
+            document.getElementById('pageTitle').textContent = t.pageTitle;
+            document.getElementById('headerTitle').textContent = t.headerTitle;
+            document.getElementById('searchInput').placeholder = t.searchInput;
+            document.getElementById('dbTitle').textContent = t.dbTitle;
+            document.getElementById('dbSubtitle').textContent = t.dbSubtitle;
+            document.getElementById('thNameZh').textContent = t.thNameZh;
+            document.getElementById('thNameEn').textContent = t.thNameEn;
+            document.getElementById('thIcao').textContent = t.thIcao;
+            document.getElementById('thIata').textContent = t.thIata;
+            document.getElementById('thCity').textContent = t.thCity;
+            document.getElementById('footerDesc').textContent = t.footerDesc;
+            document.getElementById('footerLinkDb').textContent = t.footerLinkDb;
+            document.getElementById('footerLinkApi').textContent = t.footerLinkApi;
+            document.getElementById('footerLinkSupport').textContent = t.footerLinkSupport;
+            document.getElementById('footerCopyright').textContent = t.footerCopyright;
+            document.getElementById('footerAllRights').textContent = t.footerAllRights;
+
+            // 重新渲染表格
+            const keyword = document.getElementById('searchInput').value;
+            renderTable(searchAirports(keyword));
+        }
+
         // 渲染机场表格
         function renderTable(data) {
             const tbody = document.getElementById('airportTable');
             const countEl = document.getElementById('resultCount');
+            const t = translations[currentLang];
             
             if (data.length === 0) {
                 tbody.innerHTML = `
@@ -197,7 +448,7 @@
                             <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <p class="text-lg">未找到匹配的机场</p>
+                            <p class="text-lg">${t.noResults}</p>
                         </td>
                     </tr>
                 `;
@@ -217,18 +468,18 @@
                     <td class="px-8 py-5 text-center">
                         <span class="inline-block bg-blue-50 text-blue-700 px-3 py-1 rounded-md font-mono text-xs font-bold border border-blue-100">${airport.iata}</span>
                     </td>
-                    <td class="px-8 py-5 text-slate-600 truncate-cell font-medium" title="${airport.city}">
+                    <td class="px-8 py-5 text-slate-600 truncate-cell font-medium" title="${currentLang === 'en' ? airport.cityEn : airport.city}">
                         <div class="flex items-center gap-2">
                             <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                             </svg>
-                            ${airport.city}
+                            ${currentLang === 'en' ? airport.cityEn : airport.city}
                         </div>
                     </td>
                 </tr>
             `).join('');
 
-            countEl.textContent = `共 ${data.length} 个机场`;
+            countEl.textContent = t.resultCount.replace('{count}', data.length);
         }
 
         // 搜索功能
@@ -257,6 +508,7 @@
 
             const modal = document.getElementById('modal');
             const content = document.getElementById('modalContent');
+            const t = translations[currentLang];
 
             content.innerHTML = `
                 <div class="commercial-gradient text-white p-8 relative overflow-hidden">
@@ -264,7 +516,7 @@
                     <div class="relative z-10">
                         <div class="flex justify-between items-start mb-6">
                             <div class="bg-blue-500/20 px-3 py-1 rounded-md border border-white/10 text-[10px] font-bold uppercase tracking-widest text-blue-300 mb-2 inline-block">
-                                Terminal Detail
+                                ${t.modalDetails}
                             </div>
                             <button onclick="closeModal()" class="text-white/50 hover:text-white transition-colors bg-white/10 p-2 rounded-xl backdrop-blur-md border border-white/5">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -272,16 +524,16 @@
                                 </svg>
                             </button>
                         </div>
-                        <h2 class="text-3xl font-extrabold tracking-tight mb-2">${airport.nameZh}</h2>
-                        <p class="text-slate-400 font-medium text-sm mb-6 uppercase tracking-wider">${airport.nameEn}</p>
+                        <h2 class="text-3xl font-extrabold tracking-tight mb-2">${currentLang === 'en' ? airport.nameEn : airport.nameZh}</h2>
+                        <p class="text-slate-400 font-medium text-sm mb-6 uppercase tracking-wider">${currentLang === 'en' ? airport.nameZh : airport.nameEn}</p>
                         
                         <div class="flex gap-4">
                             <div class="bg-white/5 backdrop-blur-md border border-white/10 px-4 py-2 rounded-xl">
-                                <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">ICAO Code</span>
+                                <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">${t.modalIcao}</span>
                                 <span class="font-mono text-lg font-bold text-blue-400">${airport.icao}</span>
                             </div>
                             <div class="bg-white/5 backdrop-blur-md border border-white/10 px-4 py-2 rounded-xl">
-                                <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">IATA Code</span>
+                                <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">${t.modalIata}</span>
                                 <span class="font-mono text-lg font-bold text-blue-400">${airport.iata}</span>
                             </div>
                         </div>
@@ -294,15 +546,15 @@
                         <div class="space-y-4">
                             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                 <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                                Geographic Location
+                                ${t.modalGeo}
                             </h3>
                             <div class="grid grid-cols-1 gap-3">
                                 <div class="group">
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase">City / 城市</span>
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase">${t.modalCity}</span>
                                     <p class="text-slate-700 font-bold group-hover:text-blue-600 transition-colors">${airport.city} <span class="text-slate-400 font-medium text-xs ml-1">/ ${airport.cityEn}</span></p>
                                 </div>
                                 <div class="group">
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase">Country / 國家</span>
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase">${t.modalCountry}</span>
                                     <p class="text-slate-700 font-bold group-hover:text-blue-600 transition-colors">${airport.country} <span class="text-slate-400 font-medium text-xs ml-1">/ ${airport.countryEn}</span></p>
                                 </div>
                             </div>
@@ -312,15 +564,15 @@
                         <div class="space-y-4">
                             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                 <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
-                                Facility Specs
+                                ${t.modalSpecs}
                             </h3>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase">Terminals</span>
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase">${t.modalTerminals}</span>
                                     <p class="text-slate-700 font-bold text-sm">${airport.terminals}</p>
                                 </div>
                                 <div>
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase">Runways</span>
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase">${t.modalRunways}</span>
                                     <p class="text-slate-700 font-bold text-sm">${airport.runways}</p>
                                 </div>
                             </div>
@@ -331,7 +583,7 @@
                     <div class="pt-6 border-t border-slate-100">
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="flex-1 space-y-4">
-                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Contact Info</h3>
+                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">${t.modalContact}</h3>
                                 <div class="space-y-3">
                                     <div class="flex items-center gap-3 text-slate-600 text-sm font-medium">
                                         <div class="bg-slate-100 p-2 rounded-lg text-slate-400">
@@ -352,7 +604,7 @@
                                 </div>
                             </div>
                             <div class="w-full md:w-1/3 p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col items-center justify-center text-center">
-                                <span class="text-[10px] text-slate-400 font-bold uppercase mb-2">Official Website</span>
+                                <span class="text-[10px] text-slate-400 font-bold uppercase mb-2">${t.modalWebsite}</span>
                                 <a href="https://${airport.website}" target="_blank" class="text-blue-600 font-bold text-sm hover:text-blue-700 transition-colors break-all">
                                     ${airport.website}
                                 </a>
@@ -362,7 +614,7 @@
 
                     <!-- 基地航空公司 -->
                     <div class="pt-6 border-t border-slate-100">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Hub Carriers</h3>
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">${t.modalHubs}</h3>
                         <div class="flex flex-wrap gap-2">
                             ${airport.hubFor.map(airline => `
                                 <span class="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-200 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 transition-all cursor-default">${airline}</span>
@@ -372,7 +624,7 @@
 
                     <!-- 机场简介 -->
                     <div class="pt-6 border-t border-slate-100">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Overview</h3>
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">${t.modalOverview}</h3>
                         <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 italic text-slate-600 leading-relaxed text-sm">
                             "${airport.description}"
                         </div>
@@ -409,6 +661,10 @@
             if (e.key === 'Escape') {
                 closeModal();
             }
+        });
+
+        document.getElementById('langSelector').addEventListener('change', (e) => {
+            switchLanguage(e.target.value);
         });
 
         // 初始化：默认显示所有机场
